@@ -1,0 +1,286 @@
+List all of the shell script contents of the directory
+File:  - Contents: #!/bin/bash
+# This script is intended to show the usage of
+# arithmetic operations
+
+# Addition
+expr 2 + 2
+
+# Subtration
+expr 2 - 2
+
+# Division
+expr 2 / 2
+
+# Multiplication - * must be escaped with \
+expr 2 \* 2
+
+# Modulus
+expr 15 % 2
+
+# Command substitution
+echo `expr 15 \* 2`
+
+# Set expression to variable
+MY_VARIABLE=$(expr 10 \* 20)
+echo $MY_VARIABLE
+#!/bin/bash
+# This script intends to show the usage of arrays in bash
+
+MYARRAY=("First" "Second" "Third")
+# will only echo 0 index value of array
+echo $MYARRAY
+
+# Enclose variable in brackets with index position to echo
+echo ${MYARRAY[0]}
+echo ${MYARRAY[1]}
+echo ${MYARRAY[2]}
+
+# Echo all items in array
+echo ${MYARRAY[*]}
+
+MYARRAY[3]="Fourth"
+echo ${MYARRAY[*]}
+
+# Comma delimited arrays are bad - bash treats the array elements
+# as a single array element
+NEWARRAY=("First","Second","Third")
+echo $NEWARRAY
+echo ${NEWARRAY[0]}
+
+# Simple array list and loop for display
+SERVERLIST=("websrv01" "websrv02" "websrv03" "websrv04")
+COUNT=0
+for INDEX in ${SERVERLIST[@]}; do
+    echo "Processing Server: ${SERVERLIST[COUNT]}"
+    COUNT="$(expr $COUNT + 1)"
+done
+#!/bin/bash
+# This script is intended to show how to pass arguments
+# from the command-line to this script
+
+USERNAME=$1
+PASSWORD=$2
+echo "The following username is $USERNAME and password is $PASSWORD"
+#!/bin/bash
+# This script is intended to show how to do simple substitution
+
+# Allows to expand aliases in subshells
+shopt -s expand_aliases
+
+alias TODAY="date"
+alias UFILES="find /home -user david.coy"
+
+TODAYDATE=`date`
+USERFILES=`find /home -user david.coy` # Will not output anything on Darwin
+
+echo "$TODAYDAY"
+echo "$USERFILES"
+
+A=`TODAY`
+B=`UFILES`
+
+echo "With alias, TODAY is:"
+echo "With alias, UFILES is:"
+#!/bin/bash
+# This line is intended to be used as a general description
+# of the script and anything it does
+
+echo '####################################'
+echo "This line above is not commented out" # This is commented out
+#!/bin/bash
+# This script intends to show the usage
+# of /dev/null
+
+# Redirect to /dev/null
+echo "This is displaying on the console."
+
+echo "This is going into the black hole." >> /dev/null
+
+# Redirect STDOUT to /dev/null
+echo "This is standard out" 1> /dev/null
+
+# Redirect STDERR to /dev/null
+echo "This is standard error" 2> /dev/null
+
+# Redirect STDOUT and STDERR to /dev/null
+echo "This will redirect STDOUT and STDERR" > /dev/null 2>&1
+#!/bin/bash
+
+echo "This script will give us environment information"
+echo ""
+echo "================================================"
+echo ""
+echo "Hello Username: $USER"
+echo ""
+echo "Your home directory is: $HOME"
+echo "Your shell is: $SHELL"
+echo "Your language is set to: $LANG"
+echo "Your system is: $_system_name"
+echo "================================================"
+echo ""
+#!/bin/bash
+# This exercise is intended to display the environment variables
+
+echo $USER
+echo $HOME
+echo $HISTCONTROL
+echo $TERM
+#!/bin/bash
+# This is to show exit status types
+# It will use `echo $?` to display exit status
+# 0 is success, non-zero is failure
+# `set -e` wille exit the script once an error occurs
+set -e
+
+expr 1 + 5
+echo $?
+
+rm test.txt
+echo $?
+
+expr 10 + 10
+echo $?
+#!/bin/bash
+# This script is intended to show how a for-loop works in bash
+
+echo "List all of the shell script contents of the directory"
+
+SHELLSCRIPTS=$(ls *.sh)
+
+for i in "$SHELLSCRIPTS"; do
+    DISPLAY="$(cat $i)"
+    echo "File: $SCRIPT - Contents: $DISPLAY"
+done
+#!/bin/bash
+# This script is intended to show the usage of the 'if'
+# conditional statement
+
+echo "================"
+echo "Guess the number"
+echo "================"
+echo ""
+echo "Enter a number between 1 and 5: "
+read GUESS
+
+if [ $GUESS -eq 3 ]
+then
+    echo "You guessed the correct number!"
+fi
+
+if [ $GUESS -eq 4 ]
+then
+    echo "You guessed the correct number!"
+fi
+
+#!/bin/bash
+# This script is intended to use conditional statements- if/then/else
+# and nested if statements
+
+clear
+
+echo "Enter a number between 1 and 3:"
+read VALUE
+
+if [ "$VALUE" -eq "1" ] 2>/dev/null; then
+    echo "You entered #1."
+elif [ "$VALUE" -eq "2" ] 2>/dev/null; then
+    echo "You entered #2."
+elif [ "$VALUE" -eq "3" ] 2>/dev/null; then
+    echo "You entered #3."
+else
+    echo "You didn't enter a number between 1 and 3."
+fi
+#!/bin/bash
+# This script is intended to show the usage of
+# implicit and explicit variable definition
+
+# Implicitly declared integer variable
+MYVAR=5
+echo $MYVAR
+echo "$(expr $MYVAR + 5)"
+
+# How to determine 'what' a variable is
+declare -p MYVAR # declare -- MYVAR="5"
+
+MYVAR2="Name"
+echo $MYVAR2
+
+# Set variable as integer with -i
+declare -i NEWVAR=10
+echo $NEWVAR
+
+# Declare read-only variable
+declare -r READONLY="This is a string we cannot overwrite"
+echo $READONLY
+READONLY="This is me trying to redeclare the read-only variable"
+#!/bin/bash
+# This script is intended to show the usage of the `read` command
+
+echo "Enter your First Name: "
+read FIRSTNAME
+echo "Enter your Last Name: "
+read LASTNAME
+echo "Enter your age: "
+read USERAGE
+echo ""
+
+echo "Your full name is: $FIRSTNAME $LASTNAME"
+echo "In ten years, you will be $(expr $USERAGE + 10) years old."
+#!/bin/bash
+# This script is intended to show the usage of shell expansion
+
+echo sh{ort,oot,ot}
+
+echo st{il,al}l
+
+# Echo current directory - similar to `pwd`
+echo ~+
+
+# Echo old `pwd` direcotry
+echo ~-
+
+# Echo a multiplication expression - does not need to be escaped
+echo "$[ 2 * 2 ]"
+#!/bin/bash
+# This script is intended to show how to use
+# special characters in a bash script
+
+# Using double quotes
+echo "\$MY_VARIABLE"
+
+# Using single quotes
+echo '$MY_VARIABLE'
+
+# Using quotes in a string
+echo "\"\""
+#!/bin/bash
+# Tests for existence of indicated filename
+
+FILENAME=$1
+echo "Testing for the existence of a file called $FILENAME"
+
+if [ -a $FILENAME ]
+then
+    echo "File $FILENAME does exist."
+fi
+
+if [ ! -a $FILENAME ]
+then
+    echo "File $FILENAME does not exist."
+fi
+
+echo ""
+# Testing multiple expressions in single if statement
+FILENAME2=$2
+echo "Testing for file $FILENAME2 and readability."
+if [ -f $FILENAME2 ] && [ -r $FILENAME2 ]
+then
+    echo "File $FILENAME2 exists and is readable."
+fi
+
+
+if [ ! -f $FILENAME2 ]
+then
+    echo "File $FILENAME2 does not exist."
+fi
