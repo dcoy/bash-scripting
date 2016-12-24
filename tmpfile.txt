@@ -1,0 +1,1 @@
+input_box.sh: line 17: dialog: command not found
