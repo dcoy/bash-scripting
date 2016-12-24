@@ -1,0 +1,934 @@
+#!/bin/more
+======================================
+SCRIPT NAME: arithmetic_operators.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of
+# arithmetic operations
+
+# Addition
+expr 2 + 2
+
+# Subtration
+expr 2 - 2
+
+# Division
+expr 2 / 2
+
+# Multiplication - * must be escaped with \
+expr 2 \* 2
+
+# Modulus
+expr 15 % 2
+
+# Command substitution
+echo `expr 15 \* 2`
+
+# Set expression to variable
+MY_VARIABLE=$(expr 10 \* 20)
+echo $MY_VARIABLE
+======================================
+SCRIPT NAME: arrays.sh
+======================================
+#!/bin/bash
+# This script intends to show the usage of arrays in bash
+
+MYARRAY=("First" "Second" "Third")
+# will only echo 0 index value of array
+echo $MYARRAY
+
+# Enclose variable in brackets with index position to echo
+echo ${MYARRAY[0]}
+echo ${MYARRAY[1]}
+echo ${MYARRAY[2]}
+
+# Echo all items in array
+echo ${MYARRAY[*]}
+
+MYARRAY[3]="Fourth"
+echo ${MYARRAY[*]}
+
+# Comma delimited arrays are bad - bash treats the array elements
+# as a single array element
+NEWARRAY=("First","Second","Third")
+echo $NEWARRAY
+echo ${NEWARRAY[0]}
+
+# Simple array list and loop for display
+SERVERLIST=("websrv01" "websrv02" "websrv03" "websrv04")
+COUNT=0
+for INDEX in ${SERVERLIST[@]}; do
+    echo "Processing Server: ${SERVERLIST[COUNT]}"
+    COUNT="$(expr $COUNT + 1)"
+done
+======================================
+SCRIPT NAME: case_statement.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of a case statement
+
+clear
+
+echo "  MAIN MENU"
+echo "==============="
+echo "1) Choice One"
+echo "2) Choice Two"
+echo "3) Choice Three"
+echo ""
+echo "Enter choice:"
+read MENUCHOICE
+
+case $MENUCHOICE in
+    1)
+        echo "You chose option #1";;
+    2)
+        echo "You chose option #2";;
+    3)
+        echo "You chose option #3";;
+    *)
+        echo "You chose poorly";;
+esac
+======================================
+SCRIPT NAME: checkargs1.sh
+======================================
+#!/bin/bash
+# This script is intended to show how to check CLI parameters
+
+if [ "$#" != "3" ]; then
+    echo "USAGE: checkargs.sh [param1] [param2] [param3]"
+    exit 300
+fi
+
+echo "I live! I got what I needed"
+======================================
+SCRIPT NAME: checkargs2.sh
+======================================
+#!/bin/bash
+
+# If statement on one line to check CLI arguments passed through
+: ${3?"Usage: $1 ARGUMENT $2 ARGUMENT $3 ARGUMENT"}
+
+echo "I got all three!"
+======================================
+SCRIPT NAME: cli_vars.sh
+======================================
+#!/bin/bash
+# This script is intended to show how to pass arguments
+# from the command-line to this script
+
+USERNAME=$1
+PASSWORD=$2
+echo "The following username is $USERNAME and password is $PASSWORD"
+======================================
+SCRIPT NAME: cmd_substitution.sh
+======================================
+#!/bin/bash
+# This script is intended to show how to do simple substitution
+
+# Allows to expand aliases in subshells
+shopt -s expand_aliases
+
+alias TODAY="date"
+alias UFILES="find /home -user david.coy"
+
+TODAYDATE=`date`
+USERFILES=`find /home -user david.coy` # Will not output anything on Darwin
+
+echo "$TODAYDAY"
+echo "$USERFILES"
+
+A=`TODAY`
+B=`UFILES`
+
+echo "With alias, TODAY is:"
+echo "With alias, UFILES is:"
+======================================
+SCRIPT NAME: comments.sh
+======================================
+#!/bin/bash
+# This line is intended to be used as a general description
+# of the script and anything it does
+
+echo '####################################'
+echo "This line above is not commented out" # This is commented out
+======================================
+SCRIPT NAME: dev_null_usage.sh
+======================================
+#!/bin/bash
+# This script intends to show the usage
+# of /dev/null
+
+# Redirect to /dev/null
+echo "This is displaying on the console."
+
+echo "This is going into the black hole." >> /dev/null
+
+# Redirect STDOUT to /dev/null
+echo "This is standard out" 1> /dev/null
+
+# Redirect STDERR to /dev/null
+echo "This is standard error" 2> /dev/null
+
+# Redirect STDOUT and STDERR to /dev/null
+echo "This will redirect STDOUT and STDERR" > /dev/null 2>&1
+======================================
+SCRIPT NAME: document_generator.sh
+======================================
+#!/bin/bash
+# This script is intended to show how to build a document generator
+
+DOCFILE="script_listing"
+
+echo "#!/bin/more" > "$DOCFILE"
+
+ls *.sh > templisting.txt
+
+while IFS= read -r FILENAME; do
+    if [ -f "$FILENAME" ]; then
+        echo "======================================" >> "$DOCFILE"
+        echo "SCRIPT NAME: $FILENAME" >> "$DOCFILE"
+        echo "======================================" >> "$DOCFILE"
+        echo ""
+        echo "$(cat $FILENAME)" >> "$DOCFILE"
+    fi
+done < templisting.txt
+
+chmod 755 "$DOCFILE"
+
+rm templisting.txt
+======================================
+SCRIPT NAME: env.sh
+======================================
+#!/bin/bash
+
+echo "This script will give us environment information"
+echo ""
+echo "================================================"
+echo ""
+echo "Hello Username: $USER"
+echo ""
+echo "Your home directory is: $HOME"
+echo "Your shell is: $SHELL"
+echo "Your language is set to: $LANG"
+echo "Your system is: $_system_name"
+echo "================================================"
+echo ""
+======================================
+SCRIPT NAME: env_var_example.sh
+======================================
+#!/bin/bash
+# This exercise is intended to display the environment variables
+
+echo $USER
+echo $HOME
+echo $HISTCONTROL
+echo $TERM
+======================================
+SCRIPT NAME: error_handling.sh
+======================================
+#!/bin/bash
+# This script intends to show the usage of error handling with exit
+
+echo "Change to a directory and list the contents"
+DIRECTORY=$1
+
+cd $DIRECTORY 2>/dev/null
+
+if [ "$?" = "0" ]; then
+    echo "We can change into the directory $DIRECTORY, and here are the contents"
+    echo "$(ls -alh)"
+else
+    echo "Cannot change directories, exiting with an error no listing"
+    exit 111
+fi
+======================================
+SCRIPT NAME: errors.sh
+======================================
+#!/bin/bash
+# This is to show exit status types
+# It will use `echo $?` to display exit status
+# 0 is success, non-zero is failure
+# `set -e` wille exit the script once an error occurs
+set -e
+
+expr 1 + 5
+echo $?
+
+rm test.txt
+echo $?
+
+expr 10 + 10
+echo $?
+======================================
+SCRIPT NAME: execution_operator.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of execution operators in bash
+
+echo "Enter a number between 1 and 5: "
+read VALUE
+
+if [ "$VALUE" -eq "1" ] || [ "$VALUE" -eq "3" ] || [ "$VALUE" -eq "5" ]; then
+    echo "You entered an odd value of $VALUE."
+else
+    echo "You entered a value of $VALUE."
+fi
+======================================
+SCRIPT NAME: file_descript.sh
+======================================
+#!/bin/bash
+# This script intends to show the usage of assigning descriptors to a file
+# for reference -- read/write to file using file descriptor
+
+echo "Enter a filename to read: "
+read FILENAME
+
+# '>' denotes 'write', '<' denotes 'read', '<>' denotes 'read/write'
+exec 5<>$FILENAME
+
+while read -r FRUIT; do
+    echo "Fruit: $FRUIT"
+done <&5
+
+echo "This file was read on: $(date) by $USER" >&5
+
+# Close out '5' connections
+exec 5>&-
+======================================
+SCRIPT NAME: for_loop.sh
+======================================
+#!/bin/bash
+# This script is intended to show how a for-loop works in bash
+
+echo "List all of the shell script contents of the directory"
+
+SHELLSCRIPTS=$(ls *.sh)
+
+for i in "$SHELLSCRIPTS"; do
+    DISPLAY="$(cat $i)"
+    echo "File: $SCRIPT - Contents: $DISPLAY"
+done
+======================================
+SCRIPT NAME: function_exit_return.sh
+======================================
+#!/bin/bash
+# This script intends to show the usage of return and exit in functions
+
+# Global variable declaration
+YES=0
+NO=1
+FIRST=$1
+SECOND=$2
+THIRD=$3
+
+# =========================== #
+# Function definition - start #
+# =========================== #
+
+# Check command line params passed in
+funcCheckParams() {
+  # Did we get three?
+  if [ ! -z "$THIRD" ]; then
+      echo "We got three parameters."
+      return $YES
+  else
+      echo "We did not get three parameters."
+      return $NO
+  fi
+}
+
+# =========================== #
+# Function definitions - stop #
+# =========================== #
+
+# Script - start
+
+funcCheckParams
+RETURN_VALS=$? # 0 or 1
+
+# Did we get 3 or not?
+if [ "$RETURN_VALS" -eq "$YES" ]; then
+    echo "We received three params and they are: "
+    echo "Param 1: $FIRST"
+    echo "Param 2: $SECOND"
+    echo "Param 3: $THIRD"
+    echo ""
+else
+    echo "Usage: function_exit_return.sh [param1] [param2] [param3]"
+    exit 1
+fi
+
+# Script -stop
+======================================
+SCRIPT NAME: function_organization.sh
+======================================
+#!/bin/bash
+# This script intends to show how to organize scripts to use functions
+
+
+# Global or script variables
+CMDLINE=$1
+
+echo "The script has started!"
+
+# # # # # # # # # # # # # # # # #
+# Function definitions -- start #
+# # # # # # # # # # # # # # # # #
+
+# Displays a message
+funcExample() {
+  echo "This is an example function."
+}
+
+# Display another message
+funcExample2(){
+  echo "This is another example"
+}
+
+# Beginning the script
+echo "This is the start..."
+
+funcExample
+funcExample2
+======================================
+SCRIPT NAME: function_var_scope.sh
+======================================
+#!/bin/bash
+# This script intends to show variable scope in functions
+
+# Global variable declaration
+GLOBALVAR="Globally Visible"
+
+# Function definiton start
+
+# Sample function for function variable scope
+funcExample() {
+  # local variable to the function
+  LOCALVAR="Locally Visible"
+  echo "From within the function, the variable is $LOCALVAR"
+}
+
+# Function definitions - stopped
+
+# Script start
+
+clear
+echo "This step happens first..."
+echo ""
+echo "GLOBAL variable = $GLOBALVAR (before the function call)"
+echo "LOCALVAR variable = $LOCALVAR (before the function call)"
+echo ""
+echo ""
+echo "Calling the function - funcExample()"
+echo ""
+
+funcExample
+
+echo ""
+echo "The function has been called..."
+echo ""
+echo "GLOBAL variable = $GLOBALVAR (after the function call)"
+echo "LOCALVAR variable = $LOCALVAR (after the function call)"
+echo ""
+echo "Script end"
+======================================
+SCRIPT NAME: functions.sh
+======================================
+#!/bin/bash
+# This script is intended to show functions with bash
+
+echo "Hello there! -- outside the function"
+
+functionExample () {
+  echo "Hello there -- inside the function"
+}
+
+singleLineFunction(){ echo "This is a single line function"; }
+
+functionExample
+singleLineFunction
+======================================
+SCRIPT NAME: functions_parameters.sh
+======================================
+#!/bin/bash
+# This script is intended to show functions with parameters
+
+# Global variable declaration
+USERNAME=$1
+
+# Function definitions - start
+
+# Calculate age in days
+funcAgeInDays() {
+  echo "Hello $USERNAME, you are $1 years old."
+  echo "That makes you approximately $(expr $1 \* 365) days old."
+}
+
+# Function defintions - stop
+
+# Script start
+clear
+echo "Enter your age: "
+read USERAGE
+
+# Calculate the number of days
+funcAgeInDays $USERAGE
+======================================
+SCRIPT NAME: if_statement.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of the 'if'
+# conditional statement
+
+echo "================"
+echo "Guess the number"
+echo "================"
+echo ""
+echo "Enter a number between 1 and 5: "
+read GUESS
+
+if [ $GUESS -eq 3 ]
+then
+    echo "You guessed the correct number!"
+fi
+
+if [ $GUESS -eq 4 ]
+then
+    echo "You guessed the correct number!"
+fi
+======================================
+SCRIPT NAME: if_then_else.sh
+======================================
+#!/bin/bash
+# This script is intended to use conditional statements- if/then/else
+# and nested if statements
+
+clear
+
+echo "Enter a number between 1 and 3:"
+read VALUE
+
+if [ "$VALUE" -eq "1" ] 2>/dev/null; then
+    echo "You entered #1."
+elif [ "$VALUE" -eq "2" ] 2>/dev/null; then
+    echo "You entered #2."
+elif [ "$VALUE" -eq "3" ] 2>/dev/null; then
+    echo "You entered #3."
+else
+    echo "You didn't enter a number between 1 and 3."
+fi
+======================================
+SCRIPT NAME: ifs_delimiting.sh
+======================================
+#!/bin/bash
+# This script is intended to show how to process a file with delimiters
+# IFS = Internal Field Separator
+
+echo "Enter filename to parse: "
+read FILENAME
+
+echo "Enter the delimiter: "
+read DELIM
+
+IFS=$DELIM
+
+while read -r CPU MEMORY DISK; do
+    echo "CPU: $CPU"
+    echo "Memory: $MEMORY"
+    echo "Disk: $DISK"
+done <"$FILENAME"
+
+unset IFS
+======================================
+SCRIPT NAME: implicit_explicit_vars.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of
+# implicit and explicit variable definition
+
+# Implicitly declared integer variable
+MYVAR=5
+echo $MYVAR
+echo "$(expr $MYVAR + 5)"
+
+# How to determine 'what' a variable is
+declare -p MYVAR # declare -- MYVAR="5"
+
+MYVAR2="Name"
+echo $MYVAR2
+
+# Set variable as integer with -i
+declare -i NEWVAR=10
+echo $NEWVAR
+
+# Declare read-only variable
+declare -r READONLY="This is a string we cannot overwrite"
+echo $READONLY
+READONLY="This is me trying to redeclare the read-only variable"
+======================================
+SCRIPT NAME: info_box.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of the info box with ncurses
+
+# Global variable/default value declaration
+INFOBOX=${INFOBOX=dialog}
+TITLE="Default"
+MESSAGE="Something to say"
+XCOORD=10
+YCOORD=20
+
+# Function declarations - start
+
+# Display the info box and message
+funcDisplayInfoBox() {
+    $INFOBOX -- title "$1" --infobox "$2" "$3" "$4"
+    sleep "$5"
+}
+
+# Function declarations - stop
+
+# Script start
+
+if [ "$1" == "shutdown" ]; then
+    funcDisplayInfoBox "WARNING!" "We are SHUTTING DOWN the system..." "11" "21" "5"
+    echo "Shutting down!"
+else
+    funcDisplayInfoBox "Information..." "You are not doing anything fun..." "11" "21" "5"
+    echo "Not doing anything..."
+fi
+
+# Script end
+======================================
+SCRIPT NAME: input_box.sh
+======================================
+#!/bin/bash
+# This script intends to show the usage of the input box in bash scripts
+
+# Global variable/default value declaration
+INPUTBOX=${INPUTBOX=dialog}
+TITLE="Defualt"
+MESSAGE="Something to display"
+XCOORD=10
+YCOORD=20
+
+# ============================= #
+# Function declaration -- start #
+# ============================= #
+
+# Display input box
+funcDisplayInputBox() {
+    $INPUTBOX --title "$1" --inputbox "$2" "$3" "$4" 2>tmpfile.txt
+}
+
+# =========================== #
+# Function declaration -- end #
+# =========================== #
+
+# Script start
+funcDisplayInputBox "Display filename" "Which file in the current directory do you want to display?" "10" "20"
+
+if [ "$(cat tmpfile.txt)" != "" ]; then
+    echo "$(cat tmpfile.txt)"
+else
+    echo "Nothing to do."
+fi
+
+# Script end
+======================================
+SCRIPT NAME: menu_system.sh
+======================================
+#!/bin/bash
+# This script intends to show how to build a menu system in bash scripts
+
+# Global variable/default value declaration
+MENUBOX=${MENUBOX=dialog}
+
+
+# ============================= #
+# Function declaration -- start #
+# ============================= #
+
+# Function to display a simple menu
+funcDisplayMenuBox() {
+    $MENUBOX --title "[ M A I N  M E N U ]" --menu "Use UP/DOWN arrows to move and select or the number of your choice and ENTER/RETURN" 15 45 4 1 "Display 'Hello world'" 2 "Display 'Goodbye world'" 3 "Display 'Nothing'" X "Exit" 2>choice.txt
+}
+
+# =========================== #
+# Function declaration -- end #
+# =========================== #
+
+# Script start
+funcDisplayMenuBox
+
+case "$(cat choice.txt)" in
+    1) echo "Hello world!";;
+    2) echo "Goodbye world!";;
+    3) echo "Nothing";;
+    X) echo "Exit";;
+esac
+
+# Script end
+======================================
+SCRIPT NAME: message_box.sh
+======================================
+#!/bin/bash
+# This script is intended to show a message box for confirmation in bash scripts
+
+# Global variable/default value declaration
+MSGBOX=${MSGBOX=dialog}
+TITLE="Default"
+MESSAGE="Some message"
+XCOORD=10
+YCOORD=20
+
+# ============================ #
+# Function declaration - start #
+# ============================ #
+
+# Dispaly the message box with message
+funcDisplayMessageBox() {
+    $MSGBOX --title "$1" --msgbox "$2" "$3" "$4"
+}
+
+# ========================== #
+# Function declaration - end #
+# ========================== #
+
+# Script - start
+if [ "$1" == "shutdown" ]; then
+    funcDisplayMessageBox "WARNING!" "Please press OK when you are ready to shut down the system" "10" "20"
+    echo "Shutting down NOW!"
+else
+    funcDisplayMessageBox "Boring..." "you are not asking for anything fun..." "10" "20"
+    echo "Not doing anything, back to regular scripting..."
+fi
+# Script - end
+======================================
+SCRIPT NAME: nested_functions.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usages of nested functions
+
+# Global Variable
+GENDER=$1
+
+# Function definitions - start
+
+# Create a human being
+funcHuman() {
+  ARMS=2
+  LEGS=2
+
+  echo "A human has $ARMS arms and $LEGS legs - but what gender are we?"
+
+  funcMale() {
+    BEARD=1
+
+    echo "This man has $ARMS arms and $LEGS legs, with $BEARD beard."
+    echo ""
+  }
+
+  funcFemale() {
+    BEARD=0
+
+    echo "This woman has $ARMS arms and $LEGS legs, with $BEARD beard."
+    echo ""
+  }
+}
+
+# Function definitions - stop
+
+# Script start
+clear
+echo "Determining the characteristics of the gender $GENDER"
+echo ""
+
+if [ "$GENDER" == "male" ]; then
+    funcHuman
+    funcMale
+else
+    funcHuman
+    funcFemale
+fi
+======================================
+SCRIPT NAME: overriding_events.sh
+======================================
+#!/bin/bash
+# This script is intended to show how to override events with bash scripting
+# by overriding/trapping the system exit and execute a custom function
+
+# Global variable/default value declaration
+TMPFILE="tempfile1.txt"
+TMPFILE2="tempfile2.txt"
+
+trap 'funcMyExit' EXIT
+
+# Function declaration -- start
+# Run this exit instead of default exit when called
+funcMyExit() {
+    echo "Exit intercepted..."
+    echo "Cleaning up temp files..."
+    rm -rf tempfile*.txt
+    exit 255
+}
+
+# Function declaration -- end
+
+# Script -- start
+
+echo "Write something to tempfile for later use..." > $TMPFILE
+echo "Write something to tempfile 2 for later use..." > $TMPFILE2
+
+echo "Trying to copy the indicated file before processing..."
+cp -rf $1 newFile.txt 2>/dev/null
+
+if [ "$?" == "0" ]; then
+    echo "Everything worked out fine."
+else
+    echo "Looks like it did not work out as intended."
+    exit 1
+fi
+
+# Script -- end
+======================================
+SCRIPT NAME: read_sample.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of the `read` command
+
+echo "Enter your First Name: "
+read FIRSTNAME
+echo "Enter your Last Name: "
+read LASTNAME
+echo "Enter your age: "
+read USERAGE
+echo ""
+
+echo "Your full name is: $FIRSTNAME $LASTNAME"
+echo "In ten years, you will be $(expr $USERAGE + 10) years old."
+======================================
+SCRIPT NAME: reading_files.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of reading files
+
+echo "Enter a filename to read: "
+
+#Debugging start
+set -x
+read FILENAME
+
+while read -r FRUIT; do
+    set +x
+
+    echo "Fruit: $FRUIT"
+
+    set -x
+done < "$FILENAME"
+
+# Stop debugging
+set +x
+======================================
+SCRIPT NAME: shell_expansion.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of shell expansion
+
+echo sh{ort,oot,ot}
+
+echo st{il,al}l
+
+# Echo current directory - similar to `pwd`
+echo ~+
+
+# Echo old `pwd` direcotry
+echo ~-
+
+# Echo a multiplication expression - does not need to be escaped
+echo "$[ 2 * 2 ]"
+======================================
+SCRIPT NAME: special_chars.sh
+======================================
+#!/bin/bash
+# This script is intended to show how to use
+# special characters in a bash script
+
+# Using double quotes
+echo "\$MY_VARIABLE"
+
+# Using single quotes
+echo '$MY_VARIABLE'
+
+# Using quotes in a string
+echo "\"\""
+======================================
+SCRIPT NAME: testfile.sh
+======================================
+#!/bin/bash
+# Tests for existence of indicated filename
+
+FILENAME=$1
+echo "Testing for the existence of a file called $FILENAME"
+
+if [ -a $FILENAME ]
+then
+    echo "File $FILENAME does exist."
+fi
+
+if [ ! -a $FILENAME ]
+then
+    echo "File $FILENAME does not exist."
+fi
+
+echo ""
+# Testing multiple expressions in single if statement
+FILENAME2=$2
+echo "Testing for file $FILENAME2 and readability."
+if [ -f $FILENAME2 ] && [ -r $FILENAME2 ]
+then
+    echo "File $FILENAME2 exists and is readable."
+fi
+
+
+if [ ! -f $FILENAME2 ]
+then
+    echo "File $FILENAME2 does not exist."
+fi
+======================================
+SCRIPT NAME: trap_sig.sh
+======================================
+#!/bin/bash
+# This script intends to show the usage of 'trap' and signals
+
+clear
+
+trap 'echo " - Welp, sorry bro, press Q or q!"' SIGINT SIGTERM SIGTSTP
+
+while [ $"CHOICE" != "Q" ] && [ "$CHOICE" != "q" ]; do
+    echo "MAIN MENU"
+    echo "========="
+    echo "1) Choice One"
+    echo "2) Choice Two"
+    echo "3) Choice Three"
+    echo "Q) Quit/Exit"
+    echo ""
+    read CHOICE
+
+    clear
+done
+======================================
+SCRIPT NAME: while_loop.sh
+======================================
+#!/bin/bash
+# This script is intended to show the usage of a while-loop
+
+echo "Enter the number of times to display the 'hello world' message:"
+read DISPLAYNUMBER
+
+COUNT=1
+
+while [ $COUNT -le $DISPLAYNUMBER ]; do
+    echo "Hello world - $COUNT"
+    COUNT="$(expr $COUNT + 1)"
+done
